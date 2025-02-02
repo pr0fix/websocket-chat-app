@@ -6,7 +6,20 @@ import { authenticateToken } from "../middleware/authenticateToken";
 const router = express.Router();
 
 router.get(
-  "/user/:id",
+  "/users",
+  authenticateToken,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await userService.getAllUsers();
+      res.status(200).json(result);
+    } catch (error) {
+      next(error)
+    }
+  }
+);
+
+router.get(
+  "/users/:id",
   authenticateToken,
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = new mongoose.Types.ObjectId(req.params.id);

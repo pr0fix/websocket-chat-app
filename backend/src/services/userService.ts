@@ -3,6 +3,19 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/user";
 
+const getAllUsers = async () => {
+  try {
+    const users = User.find();
+    if (!users) {
+      throw new Error("No users found");
+    }
+    return users;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return { error: "Internal server error" };
+  }
+};
+
 const getUserById = async (userId: mongoose.Types.ObjectId) => {
   try {
     const user = User.findById(userId);
@@ -81,7 +94,7 @@ const addFriend = async (senderId: string, friendId: string) => {
       throw new Error("Both senderId and friendId are required");
     }
     const user = await User.findById(senderId);
-    const friendToAdd = await User.findById(friendId);
+    const friendToAdd = await User.findById(friendId).select("-friends");
 
     if (!user || !friendToAdd) {
       throw new Error("User or friend not found");
@@ -107,4 +120,4 @@ const addFriend = async (senderId: string, friendId: string) => {
   }
 };
 
-export default { getUserById, login, signup, addFriend };
+export default { getAllUsers, getUserById, login, signup, addFriend };
