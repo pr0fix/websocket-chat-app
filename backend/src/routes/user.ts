@@ -1,8 +1,23 @@
 import express, { NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
 import userService from "../services/userService";
 import { authenticateToken } from "../middleware/authenticateToken";
 
 const router = express.Router();
+
+router.get(
+  "/user/:id",
+  authenticateToken,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = new mongoose.Types.ObjectId(req.params.id);
+    try {
+      const result = await userService.getUserById(userId);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 router.post(
   "/login",

@@ -1,6 +1,20 @@
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/user";
+
+const getUserById = async (userId: mongoose.Types.ObjectId) => {
+  try {
+    const user = User.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return { error: "Internal server error" };
+  }
+};
 
 const login = async (username: string, password: string) => {
   try {
@@ -22,7 +36,7 @@ const login = async (username: string, password: string) => {
       expiresIn: 60 * 60,
     });
 
-    return { token, username: user.username };
+    return { token, userId: user.id, username: user.username };
   } catch (error) {
     console.error("Error during login:", error);
     return { error: "Internal server error" };
@@ -93,4 +107,4 @@ const addFriend = async (senderId: string, friendId: string) => {
   }
 };
 
-export default { login, signup, addFriend };
+export default { getUserById, login, signup, addFriend };

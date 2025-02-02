@@ -1,10 +1,9 @@
 import { Message } from "./utils/types";
-
-const io = require("socket.io-client");
+import io from "socket.io-client";
 
 const socket = io("http://localhost:3000");
 
-// Replace with the actual user ID of the logged-in user
+// Replace with the actual user ID of the logged-in user and conversation ID
 const userId = "679a0c7ed09b02bc39624b9c";
 const conversationId = "679a409b725129bd47fa99ed";
 
